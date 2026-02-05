@@ -1,0 +1,1666 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zero Ragebait</title>
+  <meta name="color-scheme" content="light dark" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Zero Ragebait" />
+  <style>
+    :root{
+      --font: "Times New Roman", Times, serif;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --shadow: 0 18px 45px rgba(10,20,40,.16);
+      --shadow-sm: 0 10px 22px rgba(10,20,40,.12);
+      --blur: 18px;
+      --border: rgba(70,120,190,.20);
+      --border-strong: rgba(70,120,190,.32);
+      --accent: #2b5da8;
+      --accent2: #74a9ff;
+      --ink: #0b1630;
+      --muted: rgba(11,22,48,.70);
+      --muted2: rgba(11,22,48,.52);
+      --bg0: #f7fbff;
+      --bg1: #eef5ff;
+      --glass: rgba(255,255,255,.62);
+      --glass2: rgba(255,255,255,.42);
+      --focus: 0 0 0 4px rgba(43,93,168,.18);
+    }
+
+    [data-theme="dark"]{
+      --ink: #eaf2ff;
+      --muted: rgba(234,242,255,.75);
+      --muted2: rgba(234,242,255,.55);
+      --bg0: #071226;
+      --bg1: #0b1a33;
+      --glass: rgba(12,22,42,.52);
+      --glass2: rgba(12,22,42,.36);
+      --border: rgba(140,180,255,.20);
+      --border-strong: rgba(140,180,255,.32);
+      --shadow: 0 18px 45px rgba(0,0,0,.35);
+      --shadow-sm: 0 10px 22px rgba(0,0,0,.28);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 700px at 15% 20%, rgba(116,169,255,.42), transparent 60%),
+        radial-gradient(900px 600px at 85% 15%, rgba(43,93,168,.28), transparent 55%),
+        radial-gradient(1000px 700px at 80% 95%, rgba(116,169,255,.22), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    .app{ min-height:100%; display:flex; flex-direction:column; }
+
+    .topbar{
+      position: sticky; top:0; z-index: 50;
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      background: linear-gradient(180deg, rgba(255,255,255,.58), rgba(255,255,255,.22));
+      border-bottom: 1px solid var(--border);
+    }
+    [data-theme="dark"] .topbar{ background: linear-gradient(180deg, rgba(10,16,30,.62), rgba(10,16,30,.22)); }
+
+    .topbar-inner{
+      max-width: 1100px; margin: 0 auto;
+      padding: 14px 18px;
+      display:flex; gap:14px;
+      align-items:center; justify-content:space-between;
+    }
+
+    .brand{ display:flex; gap:12px; align-items:center; min-width: 220px; }
+    .logo{
+      width: 40px; height:40px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(43,93,168,.95), rgba(116,169,255,.95));
+      box-shadow: var(--shadow-sm);
+      position:relative; overflow:hidden;
+    }
+    .logo:before{
+      content:""; position:absolute; inset:-40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.65), transparent 50%);
+      transform: rotate(25deg);
+    }
+    .brand h1{ margin:0; font-size: 20px; letter-spacing:.4px; }
+    .brand small{ display:block; margin-top:2px; color: var(--muted2); font-size: 12.5px; letter-spacing:.2px; }
+
+    .controls{ display:flex; gap:10px; align-items:center; flex-wrap: wrap; justify-content:flex-end; }
+
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 9px 12px; border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--glass2);
+      box-shadow: 0 6px 18px rgba(10,20,40,.08);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      user-select:none;
+    }
+
+    select, button, input{ font-family: var(--font); }
+    select{
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,.55);
+      color: var(--ink);
+      outline: none;
+    }
+    [data-theme="dark"] select{ background: rgba(12,22,42,.55); }
+    select:focus{ box-shadow: var(--focus); }
+
+    .btn{
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.70), rgba(255,255,255,.35));
+      color: var(--ink);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor:pointer;
+      box-shadow: 0 10px 24px rgba(10,20,40,.10);
+      transition: transform .12s ease, box-shadow .22s ease, background .22s ease, border-color .22s ease;
+      touch-action: manipulation;
+    }
+    [data-theme="dark"] .btn{ background: linear-gradient(180deg, rgba(12,22,42,.72), rgba(12,22,42,.35)); }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 16px 34px rgba(10,20,40,.14); border-color: var(--border-strong); }
+    .btn:active{ transform: translateY(0px) scale(.99); }
+    .btn:focus{ outline:none; box-shadow: var(--focus); }
+
+    .btn.primary{ border-color: rgba(43,93,168,.45); background: linear-gradient(180deg, rgba(43,93,168,.95), rgba(43,93,168,.75)); color: white; }
+    .btn.ghost{ background: transparent; border-color: var(--border); box-shadow: none; }
+
+    .content{ flex:1; max-width: 1100px; margin: 0 auto; padding: 22px 18px 42px; width: 100%; }
+
+    .grid{ display:grid; grid-template-columns: 1.15fr .85fr; gap: 16px; }
+    @media (max-width: 980px){ .grid{ grid-template-columns: 1fr; } .brand{ min-width:auto; } }
+
+    .card{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--glass);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      padding: 18px 18px;
+    }
+
+    .card h2{ margin: 0 0 10px; font-size: 18px; letter-spacing:.2px; }
+    .sub{ margin: 0 0 12px; color: var(--muted); line-height: 1.45; font-size: 14.5px; }
+
+    .row{ display:flex; gap: 10px; align-items:center; flex-wrap:wrap; }
+
+    .file{
+      position:relative; overflow:hidden;
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px dashed var(--border-strong);
+      background: rgba(255,255,255,.35);
+      cursor:pointer;
+      transition: background .2s ease, border-color .2s ease;
+      user-select:none;
+    }
+    [data-theme="dark"] .file{ background: rgba(12,22,42,.35); }
+    .file:hover{ background: rgba(255,255,255,.52); border-color: rgba(43,93,168,.55); }
+    [data-theme="dark"] .file:hover{ background: rgba(12,22,42,.52); }
+    .file input{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+
+    .kpi{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+    .kpi > div{ border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; background: rgba(255,255,255,.34); }
+    [data-theme="dark"] .kpi > div{ background: rgba(12,22,42,.34); }
+    .kpi b{ display:block; font-size: 18px; }
+    .kpi span{ color: var(--muted2); font-size: 12.5px; }
+
+    .divider{ height:1px; background: var(--border); margin: 14px 0; }
+
+    .list{ margin: 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:10px; }
+
+    .deck{
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 12px;
+      background: rgba(255,255,255,.34);
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      transition: transform .12s ease, background .2s ease;
+    }
+    [data-theme="dark"] .deck{ background: rgba(12,22,42,.34); }
+    .deck:hover{ transform: translateY(-1px); background: rgba(255,255,255,.45); }
+    [data-theme="dark"] .deck:hover{ background: rgba(12,22,42,.45); }
+    .deck .meta{ color: var(--muted2); font-size: 12.5px; margin-top: 3px; }
+
+    .pill{ font-size: 12px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,.30); color: var(--muted); }
+
+    .view{ display:none; animation: fadeUp .24s ease both; }
+    .view.active{ display:block; }
+    @keyframes fadeUp{ from{ opacity:0; transform: translateY(10px); } to{ opacity:1; transform: translateY(0); } }
+
+    .studyWrap{ display:grid; grid-template-columns: 1fr; gap: 16px; }
+    .studyHeader{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+    .progress{ color: var(--muted); font-size: 14px; }
+
+    .flash{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 22px;
+      background: rgba(255,255,255,.52);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      min-height: 250px;
+      display:flex; flex-direction:column; justify-content:center;
+      position:relative; overflow:hidden;
+      transition: transform .16s ease;
+      touch-action: pan-y;
+    }
+    [data-theme="dark"] .flash{ background: rgba(12,22,42,.52); }
+    .flash:hover{ transform: translateY(-1px); }
+    .flash:before{ content:""; position:absolute; inset:-2px; background: radial-gradient(600px 220px at 20% 20%, rgba(116,169,255,.18), transparent 60%); pointer-events:none; }
+
+    .face{ position:relative; z-index:1; font-size: 22px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+    .face small{ color: var(--muted2); font-size: 14px; }
+    .face img{ max-width:100%; border-radius: 12px; box-shadow: var(--shadow-sm); }
+
+    /* Sticky bottom controls (great on phones) */
+    .studyActions{
+      display:flex; gap: 10px; flex-wrap:wrap; justify-content:center;
+      position: sticky;
+      bottom: calc(10px + env(safe-area-inset-bottom));
+      z-index: 20;
+      padding: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.30);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      margin: 0 auto;
+      width: fit-content;
+    }
+    [data-theme="dark"] .studyActions{ background: rgba(12,22,42,.30); }
+
+    .rate{
+      display:flex; gap: 10px; flex-wrap:wrap; justify-content:center;
+      opacity: 0; transform: translateY(6px); pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+      position: sticky;
+      bottom: calc(10px + env(safe-area-inset-bottom));
+      z-index: 21;
+      padding: 10px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.20);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      margin: 0 auto;
+      width: min(920px, 100%);
+    }
+    [data-theme="dark"] .rate{ background: rgba(12,22,42,.20); }
+    .rate.show{ opacity:1; transform: translateY(0); pointer-events:auto; }
+
+    .btn.rateBtn{ border-radius: 14px; padding: 12px 14px; min-width: 130px; }
+
+    .hint{ text-align:center; color: var(--muted2); font-size: 12.5px; margin-top: 6px; }
+    .footer{ text-align:center; color: var(--muted2); font-size: 12px; padding: 26px 18px 30px; }
+
+    dialog{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--glass);
+      color: var(--ink);
+      box-shadow: var(--shadow);
+      padding: 0;
+      max-width: 720px;
+      width: calc(100% - 28px);
+    }
+    [data-theme="dark"] dialog{ background: rgba(12,22,42,.78); }
+    dialog::backdrop{ background: rgba(0,0,0,.35); backdrop-filter: blur(6px); }
+    .modalHead{ padding: 16px 18px; border-bottom: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .modalBody{ padding: 16px 18px; }
+    .modalFoot{ padding: 14px 18px 18px; border-top: 1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
+
+    .field{ display:grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 12px; }
+    .field label{ color: var(--muted); font-size: 13.5px; }
+    .field input[type="text"], .field input[type="number"], .field input[type="time"]{
+      padding: 10px 12px; border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.55);
+      color: var(--ink);
+      outline: none;
+    }
+    [data-theme="dark"] .field input{ background: rgba(12,22,42,.55); }
+    .field input:focus{ box-shadow: var(--focus); }
+
+    .toggle{ display:inline-flex; align-items:center; gap:10px; padding: 9px 12px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,.34); }
+    [data-theme="dark"] .toggle{ background: rgba(12,22,42,.34); }
+
+    .switch{ width: 42px; height: 24px; border-radius: 999px; position:relative; background: rgba(43,93,168,.25); border: 1px solid var(--border); cursor:pointer; transition: background .2s ease; }
+    .switch:before{ content:""; position:absolute; top: 2px; left: 2px; width: 20px; height:20px; border-radius: 50%; background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.55)); box-shadow: 0 10px 18px rgba(0,0,0,.16); transition: transform .18s ease; }
+    [data-theme="dark"] .switch{ background: rgba(116,169,255,.18); }
+    .switch.on:before{ transform: translateX(18px); }
+
+    .toast{ position: fixed; right: 18px; bottom: 18px; z-index: 80; display:flex; flex-direction:column; gap:10px; max-width: min(420px, calc(100% - 36px)); }
+    .toast .t{ border: 1px solid var(--border); border-radius: 14px; background: rgba(255,255,255,.62); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); box-shadow: var(--shadow-sm); padding: 12px 12px; color: var(--ink); animation: pop .22s ease both; }
+    [data-theme="dark"] .toast .t{ background: rgba(12,22,42,.62); }
+    @keyframes pop{ from{ opacity:0; transform: translateY(10px); } to{ opacity:1; transform: translateY(0); } }
+
+    kbd{ border: 1px solid var(--border); padding: 2px 6px; border-radius: 8px; background: rgba(255,255,255,.36); font-size: 12px; }
+    [data-theme="dark"] kbd{ background: rgba(12,22,42,.36); }
+
+    .smallprint{ color: var(--muted2); font-size: 12.5px; line-height:1.45; }
+
+    /* Mobile polish */
+    @media (max-width: 600px){
+      .topbar-inner{ padding: 12px 12px; }
+      .content{ padding: 14px 12px 34px; }
+      .card{ padding: 14px 14px; }
+      .brand h1{ font-size: 18px; }
+      .face{ font-size: 20px; }
+      .btn{ padding: 12px 14px; }
+      .btn.rateBtn{ min-width: 46%; flex: 1 1 46%; }
+      .grid{ gap: 12px; }
+      .flash{ min-height: 52vh; padding: 20px 16px; }
+      .controls{ gap:8px; }
+      .chip{ padding: 8px 10px; }
+      select{ padding: 7px 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand" role="banner">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1 id="brandTitle">Zero Ragebait</h1>
+          <small id="brandTag">A private, free Anki-style study vault.</small>
+        </div>
+      </div>
+      <div class="controls" role="navigation" aria-label="Controls">
+        <span class="chip" title="Language">
+          <span aria-hidden="true">🌐</span>
+          <select id="langSel" aria-label="Language">
+            <option value="en">English</option>
+            <option value="zh-Hant">繁體中文</option>
+            <option value="zh-Hans">简体中文</option>
+          </select>
+        </span>
+
+        <span class="chip" title="Theme">
+          <span aria-hidden="true">🌓</span>
+          <span id="themeLabel">Light</span>
+          <span class="switch" id="themeSwitch" role="switch" aria-checked="false" tabindex="0"></span>
+        </span>
+
+        <button class="btn ghost" id="settingsBtn">⚙︎ <span data-i="settings">Settings</span></button>
+        <button class="btn" id="homeBtn">⌂ <span data-i="home">Home</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- HOME VIEW -->
+    <section class="view active" id="viewHome" aria-label="Home">
+      <div class="grid">
+        <div class="card">
+          <h2 data-i="importTitle">Import a deck</h2>
+          <p class="sub" data-i="importSub">
+            Upload <b>.txt</b>/<b>.csv</b> (Front ⇢ Back) or an <b>.apkg</b> (Anki export). Everything stays on this device.
+          </p>
+
+          <div class="row">
+            <label class="file" id="fileLabel">
+              <span aria-hidden="true">⬆︎</span>
+              <span id="fileText" data-i="chooseFile">Choose file</span>
+              <input id="fileInput" type="file" accept=".txt,.csv,.apkg" />
+            </label>
+            <button class="btn primary" id="importBtn" disabled><span data-i="import">Import</span></button>
+            <button class="btn" id="demoBtn"><span data-i="loadDemo">Load demo</span></button>
+          </div>
+
+          <div class="divider"></div>
+
+          <h2 data-i="yourDecks">Your decks</h2>
+          <p class="sub" data-i="decksSub">Pick a deck to study. Progress is saved locally.</p>
+          <ul class="list" id="deckList" aria-label="Deck list"></ul>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <button class="btn" id="exportBtn"><span data-i="export">Export backup</span></button>
+            <button class="btn" id="importBackupBtn"><span data-i="importBackup">Import backup</span></button>
+            <input id="backupInput" type="file" accept="application/json" style="display:none" />
+            <button class="btn" id="wipeBtn"><span data-i="wipe">Wipe local data</span></button>
+          </div>
+          <p class="smallprint" id="homeSmallprint"></p>
+        </div>
+
+        <aside class="card">
+          <h2 data-i="todayTitle">Today</h2>
+          <p class="sub" id="todaySub"></p>
+          <div class="kpi" id="kpis">
+            <div><b id="kpiDue">0</b><span data-i="due">Due</span></div>
+            <div><b id="kpiNew">0</b><span data-i="new">New</span></div>
+            <div><b id="kpiTotal">0</b><span data-i="total">Total</span></div>
+          </div>
+
+          <div class="divider"></div>
+          <h2 data-i="shortcuts">Shortcuts</h2>
+          <p class="sub">
+            <span data-i="keys1">Study:</span> <kbd>Space</kbd> <span data-i="keys2">show answer</span> · <kbd>1</kbd> Again · <kbd>2</kbd> Hard · <kbd>3</kbd> Good · <kbd>4</kbd> Easy
+          </p>
+          <p class="sub" id="swipeHintText" style="margin-top:-6px"></p>
+
+          <div class="divider"></div>
+          <h2 data-i="limitsTitle">About</h2>
+          <p class="sub" data-i="limits">
+            Zero Ragebait is an Anki-style learner for personal use. It supports core spaced repetition (SM-2 inspired), deck import, and offline storage.
+            It does not include AnkiWeb sync, add-ons, or every note template.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- STUDY VIEW -->
+    <section class="view" id="viewStudy" aria-label="Study">
+      <div class="studyWrap">
+        <div class="card studyHeader">
+          <div>
+            <h2 id="studyDeckTitle">—</h2>
+            <div class="progress" id="studyProgress"></div>
+          </div>
+          <div class="row">
+            <button class="btn" id="endSessionBtn"><span data-i="endSession">End session</span></button>
+            <button class="btn ghost" id="suspendBtn"><span data-i="suspend">Suspend</span></button>
+            <button class="btn ghost" id="buryBtn"><span data-i="bury">Bury</span></button>
+          </div>
+        </div>
+
+        <div class="flash" id="flash" role="region" aria-live="polite">
+          <div class="face" id="faceFront"></div>
+          <div class="face" id="faceBack" style="display:none"></div>
+        </div>
+
+        <div class="studyActions">
+          <button class="btn primary" id="showAnswerBtn"><span data-i="showAnswer">Show answer</span></button>
+        </div>
+
+        <div class="rate" id="rateButtons">
+          <button class="btn rateBtn" data-grade="again">1 · <span data-i="again">Again</span> <small id="ivAgain"></small></button>
+          <button class="btn rateBtn" data-grade="hard">2 · <span data-i="hard">Hard</span> <small id="ivHard"></small></button>
+          <button class="btn rateBtn" data-grade="good">3 · <span data-i="good">Good</span> <small id="ivGood"></small></button>
+          <button class="btn rateBtn" data-grade="easy">4 · <span data-i="easy">Easy</span> <small id="ivEasy"></small></button>
+        </div>
+        <div class="hint" id="hintText"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer" id="footerText"></footer>
+</div>
+
+<!-- SETTINGS MODAL -->
+<dialog id="settingsDialog">
+  <div class="modalHead">
+    <div>
+      <b style="font-size:16px" data-i="settings">Settings</b>
+      <div class="smallprint" data-i="settingsSub">Fine-tune study behavior and import parsing.</div>
+    </div>
+    <button class="btn ghost" id="closeSettingsBtn">✕</button>
+  </div>
+  <div class="modalBody">
+
+    <div class="field">
+      <label data-i="dailyTime">Daily review time</label>
+      <input type="time" id="setDailyTime" />
+    </div>
+
+    <div class="toggle" style="margin-top:6px;">
+      <span data-i="reminders">In-app reminders (10 & 5 min before)</span>
+      <span class="switch" id="reminderSwitch" role="switch" aria-checked="false" tabindex="0"></span>
+    </div>
+    <p class="smallprint" data-i="reminderNote" style="margin-top:8px"></p>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label data-i="newPerDay">New cards per day</label>
+      <input type="number" id="setNewPerDay" min="0" max="999" step="1" />
+    </div>
+
+    <div class="field">
+      <label data-i="reviewsPerDay">Reviews per day</label>
+      <input type="number" id="setRevPerDay" min="0" max="9999" step="1" />
+    </div>
+
+    <div class="field">
+      <label data-i="learningSteps">Learning steps (minutes, comma-separated)</label>
+      <input type="text" id="setLearningSteps" placeholder="1, 10" />
+    </div>
+
+    <div class="field">
+      <label data-i="txtDelimiter">TXT delimiter</label>
+      <input type="text" id="setDelimiter" placeholder="tab | comma | |||" />
+    </div>
+
+    <div class="toggle" style="margin-top:6px;">
+      <span data-i="cloze">Enable basic cloze support</span>
+      <span class="switch" id="clozeSwitch" role="switch" aria-checked="true" tabindex="0"></span>
+    </div>
+
+    <div class="divider"></div>
+    <p class="smallprint" data-i="apkgNote"></p>
+  </div>
+  <div class="modalFoot">
+    <button class="btn" id="resetSettingsBtn"><span data-i="reset">Reset</span></button>
+    <button class="btn primary" id="saveSettingsBtn"><span data-i="save">Save</span></button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  const I18N = {
+    en: {
+      settings: 'Settings',
+      settingsSub: 'Fine-tune study behavior and import parsing.',
+      home: 'Home',
+      importTitle: 'Import a deck',
+      importSub: 'Upload .txt/.csv (Front ⇢ Back) or an .apkg (Anki export). Everything stays on this device.',
+      chooseFile: 'Choose file',
+      import: 'Import',
+      loadDemo: 'Load demo',
+      yourDecks: 'Your decks',
+      decksSub: 'Pick a deck to study. Progress is saved locally.',
+      export: 'Export backup',
+      importBackup: 'Import backup',
+      wipe: 'Wipe local data',
+      todayTitle: 'Today',
+      due: 'Due',
+      new: 'New',
+      total: 'Total',
+      shortcuts: 'Shortcuts',
+      keys1: 'Study:',
+      keys2: 'show answer',
+      swipeHint: 'On phone: tap card to flip · swipe left/right to grade',
+      limitsTitle: 'About',
+      limits: 'Zero Ragebait is an Anki-style learner for personal use. It supports core spaced repetition (SM-2 inspired), deck import, and offline storage. It does not include AnkiWeb sync, add-ons, or every note template.',
+      endSession: 'End session',
+      suspend: 'Suspend',
+      bury: 'Bury',
+      showAnswer: 'Show answer',
+      again: 'Again',
+      hard: 'Hard',
+      good: 'Good',
+      easy: 'Easy',
+      dailyTime: 'Daily review time',
+      reminders: 'In-app reminders (10 & 5 min before)',
+      reminderNote: 'Note: Browsers may throttle timers when the app is closed. For guaranteed cross-device notifications, you need a PWA + Web Push server.',
+      newPerDay: 'New cards per day',
+      reviewsPerDay: 'Reviews per day',
+      learningSteps: 'Learning steps (minutes, comma-separated)',
+      txtDelimiter: 'TXT delimiter',
+      cloze: 'Enable basic cloze support',
+      apkgNote: 'APKG import requires in-browser libraries (JSZip + sql.js). This file loads them from a CDN only when you import .apkg. For fully offline use, download those libraries and paste them inline (see HTML comments).',
+      reset: 'Reset',
+      save: 'Save',
+      toastImported: 'Imported',
+      toastReady: 'Ready.',
+      toastError: 'Something went wrong.',
+      toastWiped: 'Local data cleared.',
+      toastSaved: 'Saved.',
+      toastSuspended: 'Card suspended.',
+      toastBuried: 'Card buried for today.',
+      toastBackupExported: 'Backup exported.',
+      toastBackupImported: 'Backup imported.',
+      toastReminderSet: 'Reminder scheduled.',
+      todayLine: (d) => `It is ${d}. Study a little, every day — quietly, consistently.`,
+      smallprint: 'Tip: For .txt/.csv, format as “Front<TAB>Back” per line. For cloze, use {{c1::answer}} in text.'
+    },
+    'zh-Hant': {
+      settings: '設定',
+      settingsSub: '微調複習行為與匯入解析。',
+      home: '首頁',
+      importTitle: '匯入牌組',
+      importSub: '上傳 .txt/.csv（正面 ⇢ 背面）或 .apkg（Anki 匯出）。所有資料只留在本機。',
+      chooseFile: '選擇檔案',
+      import: '匯入',
+      loadDemo: '載入示範',
+      yourDecks: '你的牌組',
+      decksSub: '選擇牌組開始複習。進度會在本機保存。',
+      export: '匯出備份',
+      importBackup: '匯入備份',
+      wipe: '清除本機資料',
+      todayTitle: '今日',
+      due: '到期',
+      new: '新卡',
+      total: '總數',
+      shortcuts: '快捷鍵',
+      keys1: '複習：',
+      keys2: '顯示答案',
+      swipeHint: '手機：點一下翻面 · 左右滑動評分',
+      limitsTitle: '關於',
+      limits: 'Zero Ragebait 為個人用途的 Anki 風格學習器。支援核心間隔重複（類 SM-2）、牌組匯入與離線保存。不包含 AnkiWeb 同步、外掛、或所有筆記樣板。',
+      endSession: '結束本次',
+      suspend: '暫停卡片',
+      bury: '埋藏到明天',
+      showAnswer: '顯示答案',
+      again: '再來',
+      hard: '困難',
+      good: '良好',
+      easy: '簡單',
+      dailyTime: '每日複習時間',
+      reminders: '應用內提醒（提前 10 / 5 分鐘）',
+      reminderNote: '注意：瀏覽器在關閉時可能會限制計時器。若要跨裝置且更可靠的通知，需要 PWA + Web Push 伺服器。',
+      newPerDay: '每日新卡上限',
+      reviewsPerDay: '每日複習上限',
+      learningSteps: '學習步驟（分鐘，用逗號分隔）',
+      txtDelimiter: 'TXT 分隔符',
+      cloze: '啟用基本填空（cloze）支援',
+      apkgNote: '匯入 APKG 需要瀏覽器函式庫（JSZip + sql.js）。本檔只會在匯入 .apkg 時從 CDN 載入。若要全離線，請下載函式庫並內嵌到此 HTML（見註解）。',
+      reset: '重設',
+      save: '儲存',
+      toastImported: '已匯入',
+      toastReady: '準備好了。',
+      toastError: '發生錯誤。',
+      toastWiped: '已清除本機資料。',
+      toastSaved: '已儲存。',
+      toastSuspended: '已暫停此卡。',
+      toastBuried: '已埋藏至明天。',
+      toastBackupExported: '已匯出備份。',
+      toastBackupImported: '已匯入備份。',
+      toastReminderSet: '已設定提醒。',
+      todayLine: (d) => `今天是 ${d}。每天一點點 — 靜靜地、穩穩地。`,
+      smallprint: '提示：.txt/.csv 每行格式「正面<TAB>背面」。填空可用 {{c1::答案}}。'
+    },
+    'zh-Hans': {
+      settings: '设置',
+      settingsSub: '微调复习行为与导入解析。',
+      home: '主页',
+      importTitle: '导入牌组',
+      importSub: '上传 .txt/.csv（正面 ⇢ 背面）或 .apkg（Anki 导出）。所有数据只保存在本机。',
+      chooseFile: '选择文件',
+      import: '导入',
+      loadDemo: '加载示例',
+      yourDecks: '你的牌组',
+      decksSub: '选择牌组开始学习。进度会在本机保存。',
+      export: '导出备份',
+      importBackup: '导入备份',
+      wipe: '清除本机数据',
+      todayTitle: '今日',
+      due: '到期',
+      new: '新卡',
+      total: '总数',
+      shortcuts: '快捷键',
+      keys1: '学习：',
+      keys2: '显示答案',
+      swipeHint: '手机：点一下翻面 · 左右滑动评分',
+      limitsTitle: '关于',
+      limits: 'Zero Ragebait 是个人用途的 Anki 风格学习器。支持核心间隔重复（类 SM-2）、牌组导入与离线保存。不包含 AnkiWeb 同步、插件、或全部笔记模板。',
+      endSession: '结束本次',
+      suspend: '暂停卡片',
+      bury: '埋藏到明天',
+      showAnswer: '显示答案',
+      again: '重来',
+      hard: '困难',
+      good: '良好',
+      easy: '简单',
+      dailyTime: '每日复习时间',
+      reminders: '应用内提醒（提前 10 / 5 分钟）',
+      reminderNote: '注意：浏览器关闭时可能会限制计时器。若要跨设备且更可靠的通知，需要 PWA + Web Push 服务器。',
+      newPerDay: '每日新卡上限',
+      reviewsPerDay: '每日复习上限',
+      learningSteps: '学习步骤（分钟，逗号分隔）',
+      txtDelimiter: 'TXT 分隔符',
+      cloze: '启用基本填空（cloze）支持',
+      apkgNote: '导入 APKG 需要浏览器库（JSZip + sql.js）。本文件仅在导入 .apkg 时从 CDN 加载。若要全离线，请下载库并内嵌到此 HTML（见注释）。',
+      reset: '重置',
+      save: '保存',
+      toastImported: '已导入',
+      toastReady: '准备好了。',
+      toastError: '发生错误。',
+      toastWiped: '已清除本机数据。',
+      toastSaved: '已保存。',
+      toastSuspended: '已暂停此卡。',
+      toastBuried: '已埋藏至明天。',
+      toastBackupExported: '已导出备份。',
+      toastBackupImported: '已导入备份。',
+      toastReminderSet: '已设置提醒。',
+      todayLine: (d) => `今天是 ${d}。每天一点点 — 安静地、稳定地。`,
+      smallprint: '提示：.txt/.csv 每行格式「正面<TAB>背面」。填空可用 {{c1::答案}}。'
+    }
+  };
+
+  const $ = (sel, root=document) => root.querySelector(sel);
+  const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
+
+  function toast(msg, ms=2600){
+    const box = $('#toast');
+    const div = document.createElement('div');
+    div.className = 't';
+    div.textContent = msg;
+    box.appendChild(div);
+    setTimeout(() => { div.style.opacity = '0'; div.style.transform = 'translateY(6px)'; }, ms - 300);
+    setTimeout(() => div.remove(), ms);
+  }
+
+  const DEFAULT_SETTINGS = {
+    lang: 'en',
+    theme: 'light',
+    dailyTime: '20:30',
+    reminders: false,
+    newPerDay: 20,
+    reviewsPerDay: 200,
+    learningSteps: [1, 10],
+    txtDelimiter: 'auto',
+    cloze: true
+  };
+
+  const State = {
+    settings: { ...DEFAULT_SETTINGS },
+    file: null,
+    currentDeckId: null,
+    session: null,
+    libs: { jszip:false, sql:false },
+    reminderTimers: []
+  };
+
+  // ---------- IndexedDB ----------
+  const DB_NAME = 'zero_ragebait_db_v2';
+  const DB_VERSION = 1;
+
+  function openDB(){
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta');
+        if (!db.objectStoreNames.contains('decks')) db.createObjectStore('decks', { keyPath: 'id' });
+        if (!db.objectStoreNames.contains('cards')) {
+          const store = db.createObjectStore('cards', { keyPath: 'id' });
+          store.createIndex('deckId', 'deckId', { unique:false });
+          store.createIndex('due', 'due', { unique:false });
+          store.createIndex('state', 'state', { unique:false });
+        }
+        if (!db.objectStoreNames.contains('media')) {
+          const store = db.createObjectStore('media', { keyPath: 'key' });
+          store.createIndex('deckId', 'deckId', { unique:false });
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function tx(storeName, mode, fn){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const t = db.transaction(storeName, mode);
+      const store = t.objectStore(storeName);
+      let res;
+      t.oncomplete = () => resolve(res);
+      t.onerror = () => reject(t.error);
+      t.onabort = () => reject(t.error);
+      Promise.resolve(fn(store, t)).then(r => { res = r; }).catch(err => reject(err));
+    });
+  }
+
+  const metaGet = (key) => tx('meta','readonly',(s)=>new Promise((res,rej)=>{const r=s.get(key); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);}));
+  const metaSet = (key,val)=> tx('meta','readwrite',(s)=>new Promise((res,rej)=>{const r=s.put(val,key); r.onsuccess=()=>res(true); r.onerror=()=>rej(r.error);}));
+
+  const deckPut = (deck)=> tx('decks','readwrite',(s)=>new Promise((res,rej)=>{const r=s.put(deck); r.onsuccess=()=>res(true); r.onerror=()=>rej(r.error);}));
+  const deckGetAll = ()=> tx('decks','readonly',(s)=>new Promise((res,rej)=>{const r=s.getAll(); r.onsuccess=()=>res(r.result||[]); r.onerror=()=>rej(r.error);}));
+  const deckDelete = (id)=> tx('decks','readwrite',(s)=>new Promise((res,rej)=>{const r=s.delete(id); r.onsuccess=()=>res(true); r.onerror=()=>rej(r.error);}));
+
+  const cardsByDeck = (deckId)=> tx('cards','readonly',(s)=>new Promise((res,rej)=>{const idx=s.index('deckId'); const r=idx.getAll(deckId); r.onsuccess=()=>res(r.result||[]); r.onerror=()=>rej(r.error);}));
+  const cardPut = (card)=> tx('cards','readwrite',(s)=>new Promise((res,rej)=>{const r=s.put(card); r.onsuccess=()=>res(true); r.onerror=()=>rej(r.error);}));
+  const cardDelete = (id)=> tx('cards','readwrite',(s)=>new Promise((res,rej)=>{const r=s.delete(id); r.onsuccess=()=>res(true); r.onerror=()=>rej(r.error);}));
+  const cardsBulkPut = (cards)=> tx('cards','readwrite',(s)=>new Promise((resolve,reject)=>{let i=0; const next=()=>{ if(i>=cards.length){resolve(true); return;} const r=s.put(cards[i++]); r.onsuccess=next; r.onerror=()=>reject(r.error);}; next(); }));
+
+  async function wipeDB(){
+    return new Promise((resolve,reject)=>{
+      const req = indexedDB.deleteDatabase(DB_NAME);
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => reject(req.error);
+      req.onblocked = () => reject(new Error('Delete blocked. Close other tabs using this app.'));
+    });
+  }
+
+  // ---------- Utilities ----------
+  const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
+  const now = () => Date.now();
+  const dayMs = 24*60*60*1000;
+  const startOfToday = () => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); };
+
+  function fmtInterval(ms){
+    if (ms < 60*1000) return '<1m';
+    if (ms < 60*60*1000) return Math.round(ms/60000)+'m';
+    if (ms < dayMs) return Math.round(ms/3600000)+'h';
+    const days = ms/dayMs;
+    if (days < 30) return Math.round(days)+'d';
+    const months = days/30;
+    if (months < 24) return Math.round(months)+'mo';
+    return Math.round(days/365)+'y';
+  }
+
+  function sanitizeHtml(html){
+    return String(html)
+      .replace(/<\s*script[^>]*>.*?<\s*\/\s*script\s*>/gis,'')
+      .replace(/on\w+\s*=\s*"[^"]*"/gi,'')
+      .replace(/on\w+\s*=\s*'[^']*'/gi,'');
+  }
+  const looksLikeHtml = (s) => /<\s*\w+[^>]*>/.test(String(s));
+  function renderFace(el, content){
+    const c = String(content ?? '');
+    if (looksLikeHtml(c)) el.innerHTML = sanitizeHtml(c);
+    else el.textContent = c;
+  }
+
+  // ---------- Theme + Language ----------
+  function applyTheme(){
+    document.documentElement.dataset.theme = State.settings.theme;
+    const on = State.settings.theme === 'dark';
+    const sw = $('#themeSwitch');
+    sw.classList.toggle('on', on);
+    sw.setAttribute('aria-checked', on ? 'true':'false');
+    $('#themeLabel').textContent = on ? 'Dark' : 'Light';
+  }
+
+  function applyLang(){
+    const lang = State.settings.lang;
+    const dict = I18N[lang] || I18N.en;
+    $$('[data-i]').forEach(el => {
+      const k = el.getAttribute('data-i');
+      const v = dict[k];
+      if (typeof v === 'string') el.textContent = v;
+    });
+    $('#brandTag').textContent = (lang==='en') ? 'A private, free Anki-style study vault.' : (lang==='zh-Hant' ? '私用、免費的 Anki 風格學習庫。' : '私用、免费的 Anki 风格学习库。');
+    const dt = new Date().toLocaleDateString(undefined, {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    $('#todaySub').textContent = dict.todayLine(dt);
+    $('#homeSmallprint').textContent = dict.smallprint;
+    const sh = $('#swipeHintText'); if (sh) sh.textContent = dict.swipeHint || '';
+    $('#footerText').textContent = `© ${new Date().getFullYear()} Zero Ragebait · Local-only · No tracking`;
+  }
+
+  // ---------- SRS ----------
+  function initCard(deckId, front, back, tags=[]){
+    return {
+      id: uid(), deckId, front, back, tags,
+      created: now(),
+      state: 'new',
+      due: now(),
+      step: 0,
+      ease: 2.5,
+      intervalDays: 0,
+      reps: 0,
+      lapses: 0,
+      lastGrade: null,
+      lastReview: null,
+      buriedUntil: null
+    };
+  }
+
+  const getLearningSteps = () => (Array.isArray(State.settings.learningSteps) && State.settings.learningSteps.length) ? State.settings.learningSteps : [1,10];
+
+  function applyGrade(card, grade, t=now(), dryRun=false){
+    const steps = getLearningSteps();
+    const gradeMap = { again:0, hard:1, good:2, easy:3 };
+    const g = gradeMap[grade] ?? 2;
+    if (card.state === 'suspended') return card;
+
+    card.lastGrade = grade;
+    card.lastReview = t;
+    card.reps = (card.reps||0) + (dryRun?0:1);
+
+    if (card.state === 'new'){
+      card.state = 'learn';
+      card.step = 0;
+      card.ease = card.ease || 2.5;
+      card.intervalDays = 0;
+    }
+
+    if (card.state === 'learn'){
+      if (g === 0){ card.step = 0; card.due = t + steps[0]*60000; return card; }
+      if (g === 1){ card.due = t + steps[Math.max(0, card.step)]*60000; return card; }
+      if (g === 2){
+        card.step = Math.min(steps.length, (card.step||0) + 1);
+        if (card.step < steps.length) card.due = t + steps[card.step]*60000;
+        else { card.state = 'review'; card.intervalDays = 1; card.due = t + card.intervalDays*dayMs; }
+        return card;
+      }
+      if (g === 3){
+        card.state = 'review';
+        card.intervalDays = 4;
+        card.due = t + card.intervalDays*dayMs;
+        card.ease = Math.min(3.2, (card.ease||2.5) + 0.15);
+        return card;
+      }
+    }
+
+    if (card.state === 'review'){
+      let ease = card.ease || 2.5;
+      let iv = card.intervalDays || 1;
+
+      if (g === 0){
+        card.lapses = (card.lapses||0) + (dryRun?0:1);
+        ease = Math.max(1.3, ease - 0.2);
+        card.ease = ease;
+        card.state = 'learn';
+        card.step = 0;
+        card.intervalDays = 0;
+        card.due = t + steps[0]*60000;
+        return card;
+      }
+
+      if (g === 1){ ease = Math.max(1.3, ease - 0.15); iv = Math.max(1, Math.round(iv * 1.2)); }
+      else if (g === 2){ iv = Math.max(1, Math.round(iv * ease)); }
+      else if (g === 3){ ease = Math.min(3.2, ease + 0.15); iv = Math.max(1, Math.round(iv * ease * 1.15)); }
+
+      card.ease = ease;
+      card.intervalDays = iv;
+      card.due = t + iv*dayMs;
+      return card;
+    }
+
+    return card;
+  }
+
+  function nextIntervalsPreview(card){
+    const t = now();
+    function simulate(grade){
+      const c = JSON.parse(JSON.stringify(card));
+      applyGrade(c, grade, t, true);
+      return Math.max(0, c.due - t);
+    }
+    return { again: simulate('again'), hard: simulate('hard'), good: simulate('good'), easy: simulate('easy') };
+  }
+
+  function shuffle(arr){
+    for (let i=arr.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]] = [arr[j],arr[i]];
+    }
+    return arr;
+  }
+
+  async function buildSession(deckId){
+    const all = await cardsByDeck(deckId);
+    const t = now();
+    const eligible = all.filter(c => c.state !== 'suspended' && !(c.state === 'buried' && (c.buriedUntil||0) > t));
+    const due = eligible.filter(c => c.state !== 'new' && c.due <= t);
+    const news = eligible.filter(c => c.state === 'new');
+    const newLimit = Math.max(0, +State.settings.newPerDay || 0);
+    const revLimit = Math.max(0, +State.settings.reviewsPerDay || 0);
+    shuffle(news); shuffle(due);
+    return { deckId, started: t, queue: [...due.slice(0, revLimit), ...news.slice(0, newLimit)], idx:0, showingBack:false };
+  }
+
+  function setView(id){
+    $$('.view').forEach(v => v.classList.toggle('active', v.id === id));
+    if (id === 'viewHome') renderHome();
+  }
+
+  function escapeHtml(s){
+    return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  async function computeStats(){
+    const decks = await deckGetAll();
+    const t = now();
+    let total=0, due=0, news=0;
+    for (const d of decks){
+      const cards = await cardsByDeck(d.id);
+      total += cards.length;
+      due += cards.filter(c => c.state !== 'new' && c.state !== 'suspended' && c.due <= t && !(c.state==='buried' && (c.buriedUntil||0)>t)).length;
+      news += cards.filter(c => c.state === 'new' && c.state !== 'suspended').length;
+    }
+    $('#kpiTotal').textContent = total;
+    $('#kpiDue').textContent = due;
+    $('#kpiNew').textContent = news;
+  }
+
+  async function renderHome(){
+    await computeStats();
+    const list = $('#deckList');
+    list.innerHTML = '';
+    const decks = await deckGetAll();
+    if (!decks.length){
+      const li = document.createElement('li');
+      li.className = 'deck';
+      li.innerHTML = `<div><b>—</b><div class="meta">${State.settings.lang.startsWith('zh') ? '尚未有牌組' : 'No decks yet'}</div></div>`;
+      list.appendChild(li);
+      return;
+    }
+
+    const t = now();
+    for (const d of decks.sort((a,b)=> (b.updated||0)-(a.updated||0))){
+      const cards = await cardsByDeck(d.id);
+      const due = cards.filter(c => c.state !== 'new' && c.state !== 'suspended' && c.due <= t && !(c.state==='buried' && (c.buriedUntil||0)>t)).length;
+      const news = cards.filter(c => c.state === 'new' && c.state !== 'suspended').length;
+
+      const li = document.createElement('li');
+      li.className = 'deck';
+      li.innerHTML = `
+        <div>
+          <b>${escapeHtml(d.name)}</b>
+          <div class="meta">${cards.length} cards · ${due} due · ${news} new</div>
+        </div>
+        <div class="row">
+          <span class="pill">${escapeHtml(d.source || 'Local')}</span>
+          <button class="btn primary" data-act="study" data-id="${d.id}">${State.settings.lang.startsWith('zh') ? '開始' : 'Study'}</button>
+          <button class="btn" data-act="rename" data-id="${d.id}">${State.settings.lang.startsWith('zh') ? '改名' : 'Rename'}</button>
+          <button class="btn" data-act="delete" data-id="${d.id}">${State.settings.lang.startsWith('zh') ? '刪除' : 'Delete'}</button>
+        </div>
+      `;
+      list.appendChild(li);
+    }
+
+    list.onclick = async (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const id = btn.getAttribute('data-id');
+      const act = btn.getAttribute('data-act');
+      if (act === 'study') await startStudy(id);
+      if (act === 'rename'){
+        const deck = (await deckGetAll()).find(x => x.id === id);
+        const name = prompt(State.settings.lang.startsWith('zh') ? '新名稱：' : 'New name:', deck?.name || '');
+        if (name && name.trim()){
+          deck.name = name.trim(); deck.updated = now();
+          await deckPut(deck); renderHome();
+        }
+      }
+      if (act === 'delete'){
+        const ok = confirm(State.settings.lang.startsWith('zh') ? '確定刪除這個牌組？' : 'Delete this deck?');
+        if (!ok) return;
+        const cards = await cardsByDeck(id);
+        for (const c of cards) await cardDelete(c.id);
+        await deckDelete(id);
+        toast(State.settings.lang.startsWith('zh') ? '已刪除' : 'Deleted');
+        renderHome();
+      }
+    };
+  }
+
+  // ---------- Study ----------
+  async function startStudy(deckId){
+    const deck = (await deckGetAll()).find(d => d.id === deckId);
+    if (!deck) return;
+    State.currentDeckId = deckId;
+    State.session = await buildSession(deckId);
+    $('#studyDeckTitle').textContent = deck.name;
+    if (!State.session.queue.length){
+      toast(State.settings.lang.startsWith('zh') ? '今天沒有可複習的卡。' : 'Nothing due right now.');
+      setView('viewHome');
+      return;
+    }
+    setView('viewStudy');
+    State.session.showingBack = false;
+    await showCard();
+  }
+
+  function updateProgress(){
+    const s = State.session;
+    if (!s) return;
+    const left = Math.max(0, s.queue.length - s.idx);
+    const done = s.idx;
+    $('#studyProgress').textContent = State.settings.lang.startsWith('zh') ? `進度：已完成 ${done}／剩餘 ${left}` : `Progress: ${done} done · ${left} left`;
+  }
+
+  async function showCard(){
+    const s = State.session;
+    updateProgress();
+    if (!s || s.idx >= s.queue.length){
+      toast(State.settings.lang.startsWith('zh') ? '本次複習完成。' : 'Session complete.');
+      setView('viewHome');
+      return;
+    }
+
+    const card = s.queue[s.idx];
+    s.showingBack = false;
+
+    $('#faceBack').style.display = 'none';
+    $('#faceFront').style.display = 'block';
+    $('#rateButtons').classList.remove('show');
+    $('#showAnswerBtn').style.display = 'inline-flex';
+
+    renderFace($('#faceFront'), card.front);
+
+    $('#hintText').textContent = State.settings.lang.startsWith('zh')
+      ? '手機：點卡片翻面／左右滑動評分 · 電腦：Space 顯示答案'
+      : 'Phone: tap card to flip / swipe to grade · Desktop: Space shows answer';
+
+    const prev = nextIntervalsPreview(card);
+    $('#ivAgain').textContent = ` · ${fmtInterval(prev.again)}`;
+    $('#ivHard').textContent = ` · ${fmtInterval(prev.hard)}`;
+    $('#ivGood').textContent = ` · ${fmtInterval(prev.good)}`;
+    $('#ivEasy').textContent = ` · ${fmtInterval(prev.easy)}`;
+  }
+
+  async function revealAnswer(){
+    const s = State.session;
+    if (!s || s.showingBack) return;
+    const card = s.queue[s.idx];
+    s.showingBack = true;
+
+    $('#faceFront').style.display = 'none';
+    $('#faceBack').style.display = 'block';
+    renderFace($('#faceBack'), card.back);
+
+    $('#rateButtons').classList.add('show');
+    $('#showAnswerBtn').style.display = 'none';
+    $('#hintText').textContent = State.settings.lang.startsWith('zh') ? '按 1-4 或左右滑動評分' : 'Rate with 1–4 or swipe';
+  }
+
+  async function gradeCurrent(grade){
+    const s = State.session;
+    if (!s) return;
+    const card = s.queue[s.idx];
+    if (!card) return;
+
+    applyGrade(card, grade, now(), false);
+    await cardPut(card);
+
+    s.idx += 1;
+    await showCard();
+  }
+
+  async function suspendCurrent(){
+    const s = State.session;
+    if (!s) return;
+    const card = s.queue[s.idx];
+    card.state = 'suspended';
+    await cardPut(card);
+    toast(I18N[State.settings.lang].toastSuspended);
+    s.idx += 1;
+    await showCard();
+  }
+
+  async function buryCurrent(){
+    const s = State.session;
+    if (!s) return;
+    const card = s.queue[s.idx];
+    card.state = 'buried';
+    card.buriedUntil = startOfToday() + dayMs;
+    await cardPut(card);
+    toast(I18N[State.settings.lang].toastBuried);
+    s.idx += 1;
+    await showCard();
+  }
+
+  // ---------- Import: TXT/CSV ----------
+  function detectDelimiter(text){
+    const sample = text.split(/\r?\n/).slice(0,20).join('\n');
+    const tab = (sample.match(/\t/g)||[]).length;
+    const comma = (sample.match(/,/g)||[]).length;
+    const pipes = (sample.match(/\|\|\|/g)||[]).length;
+    if (pipes>0) return '|||';
+    if (tab >= comma) return '\t';
+    return ',';
+  }
+
+  function splitCSVLine(line){
+    const out=[]; let cur=''; let inQ=false;
+    for (let i=0;i<line.length;i++){
+      const ch=line[i];
+      if (ch==='"'){
+        if (inQ && line[i+1]==='"'){ cur+='"'; i++; }
+        else inQ=!inQ;
+      } else if (ch===',' && !inQ){ out.push(cur); cur=''; }
+      else cur+=ch;
+    }
+    out.push(cur);
+    return out;
+  }
+
+  function clozeToQA(front, back){
+    const txt = `${front}\n${back}`;
+    if (!/\{\{c\d+::/i.test(txt)) return {frontHtml: front, backHtml: back};
+    const makeFront = (s) => String(s).replace(/\{\{c\d+::(.*?)(::(.*?))?\}\}/gi, '____');
+    const makeBack = (s) => String(s).replace(/\{\{c\d+::(.*?)(::(.*?))?\}\}/gi, '<span style="padding:0 6px;border-radius:10px;background:rgba(116,169,255,.22);border:1px solid var(--border);">$1</span>');
+    return { frontHtml: makeFront(front), backHtml: makeBack(back) };
+  }
+
+  function parseTxtToCards(text, deckId){
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const delSetting = (State.settings.txtDelimiter||'auto').trim();
+    const delim = (delSetting === 'auto') ? detectDelimiter(text) : (delSetting === 'tab' ? '\t' : (delSetting === 'comma' ? ',' : delSetting));
+
+    const cards = [];
+    for (const line of lines){
+      let parts;
+      if (delim === '\t') parts = line.split('\t');
+      else if (delim === ',') parts = splitCSVLine(line);
+      else parts = line.split(delim);
+      if (parts.length < 2) continue;
+      const front = parts[0];
+      const back = parts.slice(1).join(delim);
+      const {frontHtml, backHtml} = State.settings.cloze ? clozeToQA(front, back) : {frontHtml:front, backHtml:back};
+      cards.push(initCard(deckId, frontHtml, backHtml, []));
+    }
+    return cards;
+  }
+
+  async function importTxt(file){
+    const text = await file.text();
+    const deckId = uid();
+    const deckName = file.name.replace(/\.(txt|csv)$/i,'');
+    const deck = { id: deckId, name: deckName || 'Deck', created: now(), updated: now(), source: file.name };
+    const cards = parseTxtToCards(text, deckId);
+    await deckPut(deck);
+    await cardsBulkPut(cards);
+    toast(`${I18N[State.settings.lang].toastImported}: ${deck.name} (${cards.length})`);
+  }
+
+  // ---------- APKG import (CDN) ----------
+  function loadScript(url){
+    return new Promise((resolve,reject)=>{
+      const s = document.createElement('script');
+      s.src = url;
+      s.onload = () => resolve(true);
+      s.onerror = () => reject(new Error('Failed to load '+url));
+      document.head.appendChild(s);
+    });
+  }
+
+  async function ensureApkgLibs(){
+    if (!State.libs.jszip){ await loadScript('https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js'); State.libs.jszip = true; }
+    if (!State.libs.sql){ await loadScript('https://cdn.jsdelivr.net/npm/sql.js@1.9.0/dist/sql-wasm.js'); State.libs.sql = true; }
+  }
+
+  // media store
+  async function mediaGet(deckId, filename){
+    const key = `${deckId}::${filename}`;
+    return tx('media','readonly', (s)=>new Promise((res,rej)=>{const r=s.get(key); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);}));
+  }
+  async function mediaPut(deckId, filename, blob){
+    const key = `${deckId}::${filename}`;
+    return tx('media','readwrite', (s)=>new Promise((res,rej)=>{const r=s.put({ key, deckId, filename, blob }); r.onsuccess=()=>res(true); r.onerror=()=>rej(r.error);}));
+  }
+
+  async function importApkg(file){
+    await ensureApkgLibs();
+    const deckId = uid();
+    const deckName = file.name.replace(/\.apkg$/i,'');
+    const deck = { id: deckId, name: deckName || 'Anki Deck', created: now(), updated: now(), source: file.name };
+
+    const buf = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(buf);
+
+    const colFile = zip.file('collection.anki2') || zip.file('collection.anki21');
+    if (!colFile) throw new Error('collection.anki2 not found');
+    const colBuf = await colFile.async('arraybuffer');
+
+    let mediaMap = {};
+    const mediaFile = zip.file('media');
+    if (mediaFile){
+      try{ mediaMap = JSON.parse(await mediaFile.async('string')) || {}; }catch(e){ mediaMap = {}; }
+    }
+
+    const SQL = await initSqlJs({ locateFile: f => 'https://cdn.jsdelivr.net/npm/sql.js@1.9.0/dist/'+f });
+    const db = new SQL.Database(new Uint8Array(colBuf));
+
+    let models = {};
+    try{
+      const colRes = db.exec('SELECT models FROM col LIMIT 1');
+      if (colRes?.[0]?.values?.[0]?.[0]) models = JSON.parse(colRes[0].values[0][0]) || {};
+    }catch(e){ models = {}; }
+
+    const notesRes = db.exec('SELECT id, mid, flds, tags FROM notes');
+    const notes = [];
+    if (notesRes?.[0]?.values){ for (const row of notesRes[0].values){ notes.push({ nid: row[0], mid: row[1], flds: row[2], tags: row[3] }); } }
+
+    const cardsRes = db.exec('SELECT id, nid, ord FROM cards');
+    const cardRows = [];
+    if (cardsRes?.[0]?.values){ for (const row of cardsRes[0].values){ cardRows.push({ cid: row[0], nid: row[1], ord: row[2] }); } }
+
+    const noteMap = new Map(notes.map(n => [n.nid, n]));
+
+    function clozeFront(text, n){
+      let s = String(text ?? '');
+      return s.replace(/\{\{c(\d+)::(.*?)(::(.*?))?\}\}/gis, (m, num, ans) => (parseInt(num,10)===n ? '____' : ans));
+    }
+    function clozeBack(text, n){
+      let s = String(text ?? '');
+      return s.replace(/\{\{c(\d+)::(.*?)(::(.*?))?\}\}/gis, (m, num, ans, _x, hint) => {
+        if (parseInt(num,10)===n){
+          const h = hint ? `<small style="color:var(--muted2)">(${sanitizeHtml(hint)})</small>` : '';
+          return `<span style="padding:0 6px;border-radius:10px;background:rgba(116,169,255,.22);border:1px solid var(--border);">${ans}</span> ${h}`;
+        }
+        return ans;
+      });
+    }
+
+    const cardsOut = [];
+    for (const cr of cardRows){
+      const n = noteMap.get(cr.nid);
+      if (!n) continue;
+      const model = models[String(n.mid)] || {};
+      const type = model.type; // 0 basic, 1 cloze
+      const fields = String(n.flds||'').split('\u001f');
+
+      let front = fields[0] ?? '';
+      let back = fields[1] ?? '';
+      if (fields.length > 2) back = [back, ...fields.slice(2)].filter(Boolean).join('<hr/>');
+
+      if (State.settings.cloze && type === 1){
+        const clozeN = (cr.ord|0) + 1;
+        const raw = fields.join('\n');
+        front = clozeFront(raw, clozeN);
+        back  = clozeBack(raw, clozeN);
+      }
+
+      const tags = String(n.tags||'').trim().split(/\s+/).filter(Boolean);
+      cardsOut.push(initCard(deckId, front, back, tags));
+    }
+
+    // Store media
+    for (const numKey of Object.keys(mediaMap)){
+      const filename = mediaMap[numKey];
+      const f = zip.file(String(numKey));
+      if (!f) continue;
+      const blob = await f.async('blob');
+      await mediaPut(deckId, filename, blob);
+    }
+
+    await deckPut(deck);
+    await cardsBulkPut(cardsOut);
+    toast(`${I18N[State.settings.lang].toastImported}: ${deck.name} (${cardsOut.length})`);
+  }
+
+  // ---------- Demo ----------
+  async function loadDemo(){
+    const deckId = uid();
+    const deck = { id: deckId, name: 'Demo · Zero Ragebait', created: now(), updated: now(), source: 'Built-in' };
+    const rows = [
+      ['Spaced repetition', 'A method of reviewing information at increasing intervals to improve long-term memory.'],
+      ['{{c1::Physiotherapy}}', 'Example cloze: {{c1::Physiotherapy}} focuses on restoring movement and function.'],
+      ['Phone gestures', 'Tap to flip. Swipe left = Hard / Again. Swipe right = Good / Easy.'],
+      ['Old money', 'Quiet luxury: serif type, symmetry, restrained palette, subtle glass.']
+    ];
+    const cards = rows.map(([f,b]) => {
+      const {frontHtml, backHtml} = State.settings.cloze ? clozeToQA(f,b) : {frontHtml:f, backHtml:b};
+      return initCard(deckId, frontHtml, backHtml, ['demo']);
+    });
+    await deckPut(deck);
+    await cardsBulkPut(cards);
+    toast(`${I18N[State.settings.lang].toastImported}: ${deck.name} (${cards.length})`);
+    renderHome();
+  }
+
+  // ---------- Backup ----------
+  async function exportBackup(){
+    const decks = await deckGetAll();
+    const cards = await tx('cards','readonly',(s)=>new Promise((res,rej)=>{const r=s.getAll(); r.onsuccess=()=>res(r.result||[]); r.onerror=()=>rej(r.error);}));
+    const payload = { app:'Zero Ragebait', version:2, exportedAt: now(), settings: State.settings, decks, cards };
+    const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `zero-ragebait-backup-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast(I18N[State.settings.lang].toastBackupExported);
+  }
+
+  async function importBackup(file){
+    const json = JSON.parse(await file.text());
+    if (!json || json.app !== 'Zero Ragebait') throw new Error('Not a Zero Ragebait backup');
+    for (const d of (json.decks||[])) await deckPut(d);
+    await cardsBulkPut(json.cards||[]);
+    if (json.settings){
+      State.settings = { ...DEFAULT_SETTINGS, ...json.settings };
+      await metaSet('settings', State.settings);
+      $('#langSel').value = State.settings.lang;
+      applyTheme(); applyLang();
+      scheduleReminders();
+    }
+    toast(I18N[State.settings.lang].toastBackupImported);
+    renderHome();
+  }
+
+  // ---------- Reminders (in-app only) ----------
+  function clearReminders(){
+    for (const id of State.reminderTimers) clearTimeout(id);
+    State.reminderTimers = [];
+  }
+
+  function nextDailyTimeMs(hhmm){
+    const [hh, mm] = String(hhmm||'00:00').split(':').map(x=>parseInt(x,10));
+    const d = new Date();
+    const target = new Date(d);
+    target.setHours(hh||0, mm||0, 0, 0);
+    if (target.getTime() <= Date.now()) target.setDate(target.getDate() + 1);
+    return target.getTime();
+  }
+
+  async function ensureNotifyPermission(){
+    if (!('Notification' in window)) return false;
+    if (Notification.permission === 'granted') return true;
+    if (Notification.permission === 'denied') return false;
+    const p = await Notification.requestPermission();
+    return p === 'granted';
+  }
+
+  async function showReminder(title, body){
+    // Use simple Notification constructor; many mobile browsers prefer SW showNotification.
+    // This is best-effort for in-app reminders.
+    try{
+      new Notification(title, { body });
+    }catch(e){
+      // fallback: toast
+      toast(body);
+    }
+  }
+
+  async function scheduleReminders(){
+    clearReminders();
+    if (!State.settings.reminders) return;
+
+    const ok = await ensureNotifyPermission();
+    if (!ok){
+      toast(State.settings.lang.startsWith('zh') ? '未取得通知權限。' : 'Notification permission not granted.');
+      return;
+    }
+
+    const tDaily = nextDailyTimeMs(State.settings.dailyTime);
+    const offsets = [10, 5].map(m => m*60*1000);
+
+    for (const off of offsets){
+      const t = tDaily - off;
+      const delay = Math.max(0, t - Date.now());
+      const id = setTimeout(() => {
+        const lang = State.settings.lang;
+        const title = 'Zero Ragebait';
+        const body = lang.startsWith('zh') ? `距離每日複習還有 ${Math.round(off/60000)} 分鐘` : `Daily review in ${Math.round(off/60000)} minutes`;
+        showReminder(title, body);
+        // reschedule next day
+        scheduleReminders();
+      }, delay);
+      State.reminderTimers.push(id);
+    }
+    toast(I18N[State.settings.lang].toastReminderSet);
+  }
+
+  // ---------- Wire UI ----------
+  function bindUI(){
+    $('#fileInput').addEventListener('change', (e) => {
+      State.file = e.target.files?.[0] || null;
+      $('#importBtn').disabled = !State.file;
+      $('#fileText').textContent = State.file ? State.file.name : I18N[State.settings.lang].chooseFile;
+    });
+
+    $('#importBtn').addEventListener('click', async () => {
+      if (!State.file) return;
+      try{
+        $('#importBtn').disabled = true;
+        const f = State.file;
+        const name = f.name.toLowerCase();
+        if (name.endsWith('.txt') || name.endsWith('.csv')) await importTxt(f);
+        else if (name.endsWith('.apkg')) await importApkg(f);
+        else throw new Error('Unsupported file');
+        State.file = null;
+        $('#fileInput').value = '';
+        $('#fileText').textContent = I18N[State.settings.lang].chooseFile;
+        toast(I18N[State.settings.lang].toastReady);
+        await renderHome();
+      }catch(err){
+        console.error(err);
+        toast(`${I18N[State.settings.lang].toastError} ${err.message||''}`);
+      }finally{
+        $('#importBtn').disabled = false;
+      }
+    });
+
+    $('#demoBtn').addEventListener('click', loadDemo);
+    $('#homeBtn').addEventListener('click', () => setView('viewHome'));
+
+    // Theme
+    const toggleTheme = async () => {
+      State.settings.theme = (State.settings.theme === 'dark') ? 'light' : 'dark';
+      await metaSet('settings', State.settings);
+      applyTheme();
+    };
+    $('#themeSwitch').addEventListener('click', toggleTheme);
+    $('#themeSwitch').addEventListener('keydown', (e)=>{ if (e.key==='Enter' || e.key===' ') { e.preventDefault(); toggleTheme(); } });
+
+    // Language
+    $('#langSel').addEventListener('change', async (e) => {
+      State.settings.lang = e.target.value;
+      await metaSet('settings', State.settings);
+      applyLang();
+      renderHome();
+    });
+
+    // Settings modal
+    const dlg = $('#settingsDialog');
+    $('#settingsBtn').addEventListener('click', () => { fillSettingsForm(); dlg.showModal(); });
+    $('#closeSettingsBtn').addEventListener('click', () => dlg.close());
+
+    $('#saveSettingsBtn').addEventListener('click', async () => {
+      readSettingsForm();
+      await metaSet('settings', State.settings);
+      applyTheme(); applyLang();
+      dlg.close();
+      toast(I18N[State.settings.lang].toastSaved);
+      scheduleReminders();
+    });
+
+    $('#resetSettingsBtn').addEventListener('click', () => {
+      State.settings = { ...DEFAULT_SETTINGS, lang: State.settings.lang, theme: State.settings.theme };
+      fillSettingsForm();
+    });
+
+    // Toggle switches
+    const syncSwitch = (id, on) => {
+      const sw = $(id);
+      sw.classList.toggle('on', !!on);
+      sw.setAttribute('aria-checked', on ? 'true':'false');
+    };
+
+    $('#clozeSwitch').addEventListener('click', () => { State.settings.cloze = !State.settings.cloze; syncSwitch('#clozeSwitch', State.settings.cloze); });
+    $('#clozeSwitch').addEventListener('keydown', (e)=>{ if (e.key==='Enter' || e.key===' ') { e.preventDefault(); State.settings.cloze=!State.settings.cloze; syncSwitch('#clozeSwitch', State.settings.cloze); } });
+
+    $('#reminderSwitch').addEventListener('click', () => { State.settings.reminders = !State.settings.reminders; syncSwitch('#reminderSwitch', State.settings.reminders); });
+    $('#reminderSwitch').addEventListener('keydown', (e)=>{ if (e.key==='Enter' || e.key===' ') { e.preventDefault(); State.settings.reminders=!State.settings.reminders; syncSwitch('#reminderSwitch', State.settings.reminders); } });
+
+    // Study controls
+    $('#showAnswerBtn').addEventListener('click', revealAnswer);
+    $('#endSessionBtn').addEventListener('click', () => setView('viewHome'));
+    $('#suspendBtn').addEventListener('click', suspendCurrent);
+    $('#buryBtn').addEventListener('click', buryCurrent);
+
+    $('#rateButtons').addEventListener('click', async (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      await gradeCurrent(btn.getAttribute('data-grade'));
+    });
+
+    // Keyboard shortcuts
+    window.addEventListener('keydown', async (e) => {
+      if ($('#settingsDialog').open) return;
+      if (!$('#viewStudy').classList.contains('active')) return;
+      if (e.key === ' '){
+        e.preventDefault();
+        if (!State.session?.showingBack) await revealAnswer();
+        return;
+      }
+      const keyMap = { '1':'again', '2':'hard', '3':'good', '4':'easy' };
+      if (keyMap[e.key]){
+        e.preventDefault();
+        if (State.session?.showingBack) await gradeCurrent(keyMap[e.key]);
+      }
+    });
+
+    // Tap + swipe gestures for phones
+    const flash = $('#flash');
+    if (flash){
+      let sx=0, sy=0, st=0;
+      flash.addEventListener('click', async () => {
+        if (!$('#viewStudy').classList.contains('active')) return;
+        if (!State.session?.showingBack) await revealAnswer();
+      });
+      flash.addEventListener('touchstart', (e) => {
+        const t = e.changedTouches[0];
+        sx = t.clientX; sy = t.clientY; st = Date.now();
+      }, {passive:true});
+      flash.addEventListener('touchend', async (e) => {
+        if (!$('#viewStudy').classList.contains('active')) return;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - sx;
+        const dy = t.clientY - sy;
+        const dt = Date.now() - st;
+        if (dt > 650) return;
+        const ax = Math.abs(dx), ay = Math.abs(dy);
+        if (ay > 45 && ay > ax && dy < 0){
+          if (!State.session?.showingBack) await revealAnswer();
+          return;
+        }
+        if (ax > 55 && ax > ay && State.session?.showingBack){
+          if (dx < 0) await gradeCurrent(ax > 140 ? 'again' : 'hard');
+          else await gradeCurrent(ax > 140 ? 'easy' : 'good');
+        }
+      }, {passive:true});
+    }
+
+    // Backup
+    $('#exportBtn').addEventListener('click', exportBackup);
+    $('#importBackupBtn').addEventListener('click', () => $('#backupInput').click());
+    $('#backupInput').addEventListener('change', async (e) => {
+      const f = e.target.files?.[0];
+      if (!f) return;
+      try{ await importBackup(f); }
+      catch(err){ console.error(err); toast(`${I18N[State.settings.lang].toastError} ${err.message||''}`); }
+      finally{ e.target.value=''; }
+    });
+
+    $('#wipeBtn').addEventListener('click', async () => {
+      const ok = confirm(State.settings.lang.startsWith('zh') ? '確定清除所有本機資料？' : 'Wipe all local data?');
+      if (!ok) return;
+      try{ await wipeDB(); toast(I18N[State.settings.lang].toastWiped); setTimeout(()=>location.reload(), 650); }
+      catch(err){ console.error(err); toast(`${I18N[State.settings.lang].toastError} ${err.message||''}`); }
+    });
+  }
+
+  function fillSettingsForm(){
+    $('#setDailyTime').value = State.settings.dailyTime || '20:30';
+    $('#setNewPerDay').value = State.settings.newPerDay;
+    $('#setRevPerDay').value = State.settings.reviewsPerDay;
+    $('#setLearningSteps').value = (State.settings.learningSteps || []).join(', ');
+    $('#setDelimiter').value = State.settings.txtDelimiter;
+    $('#clozeSwitch').classList.toggle('on', !!State.settings.cloze);
+    $('#reminderSwitch').classList.toggle('on', !!State.settings.reminders);
+    $('#reminderSwitch').setAttribute('aria-checked', State.settings.reminders ? 'true':'false');
+    // reminder note text
+    const rn = document.querySelector('[data-i="reminderNote"]');
+    if (rn) rn.textContent = (I18N[State.settings.lang]||I18N.en).reminderNote;
+    const ap = document.querySelector('[data-i="apkgNote"]');
+    if (ap) ap.textContent = (I18N[State.settings.lang]||I18N.en).apkgNote;
+  }
+
+  function clampInt(val, min, max, fallback){
+    const n = parseInt(val,10);
+    if (!Number.isFinite(n)) return fallback;
+    return Math.min(max, Math.max(min, n));
+  }
+
+  function readSettingsForm(){
+    State.settings.dailyTime = String($('#setDailyTime').value || '20:30');
+    State.settings.newPerDay = clampInt($('#setNewPerDay').value, 0, 999, DEFAULT_SETTINGS.newPerDay);
+    State.settings.reviewsPerDay = clampInt($('#setRevPerDay').value, 0, 9999, DEFAULT_SETTINGS.reviewsPerDay);
+    const steps = String($('#setLearningSteps').value||'').split(',').map(s=>parseFloat(s.trim())).filter(n=>Number.isFinite(n) && n>0);
+    State.settings.learningSteps = steps.length ? steps : DEFAULT_SETTINGS.learningSteps;
+    const del = String($('#setDelimiter').value||'auto').trim();
+    State.settings.txtDelimiter = del || 'auto';
+  }
+
+  async function boot(){
+    const stored = await metaGet('settings');
+    if (stored) State.settings = { ...DEFAULT_SETTINGS, ...stored };
+
+    $('#langSel').value = State.settings.lang;
+    applyTheme();
+    applyLang();
+
+    bindUI();
+    await renderHome();
+
+    toast(I18N[State.settings.lang].toastReady);
+    scheduleReminders();
+  }
+
+  boot().catch(err => { console.error(err); toast('Fatal error: ' + (err.message||err)); });
+})();
+</script>
+</body>
+</html>
